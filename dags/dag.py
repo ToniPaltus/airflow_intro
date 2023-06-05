@@ -1,8 +1,8 @@
-import json
+import os
 from datetime import datetime
-
 import pandas as pd
 import pymongo
+from dotenv import load_dotenv, dotenv_values
 from airflow.decorators import dag, task, task_group
 from airflow.sensors.filesystem import FileSensor
 
@@ -10,15 +10,13 @@ default_args = {
     "owner": "toni",
 }
 
-# Load env variables
-with open("/home/toni/airflow/data/env.json", "r") as f:
-    creds = json.load(f)
+load_dotenv()
+creds = dotenv_values(".env")
 
-file_path = creds["file_path"]
-mongo_client = creds["mongo_client"]
-db_name = creds["db_name"]
-collection_name = creds["collection_name"]
-
+file_path = os.getenv('FILE_PATH')
+mongo_client = os.getenv('MONGO_CLIENT')
+db_name = os.getenv('DB_NAME')
+collection_name = os.getenv('COLLECTION_NAME')
 
 # DAG
 @dag(
